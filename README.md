@@ -1,5 +1,4 @@
-#1
-Data Flow - Every request will follow this flow.
+### 1. Data Flow - Every request will follow this flow.
 
                     User Question
                           │
@@ -21,9 +20,8 @@ Data Flow - Every request will follow this flow.
                           ▼
                    Final Response
 
-#2      
-This will be broken down into modules.
-
+### 2. This will be broken down into modules.
+```
                 Chat Service
 
                       |
@@ -35,11 +33,13 @@ This will be broken down into modules.
 Retriever   Prompt    LLM      Response
 
 Builder    Builder   Provider   Formatter
+```
+**Each module has one responsibility.**
 
-Each module has one responsibility.
+### 3. Define Responsibilities
 
-#3 
-Define Responsibilities
+<details>
+<summary>Component Wise Responsibilities</summary>
 
 API Layer: 
 Only receives HTTP requests.
@@ -63,93 +63,95 @@ If we want to switch domain then only prompt changes and orchestrator remains un
 LLM Provider: OpenAI, Claude, Ollama, anything.. 
 Changes are only required in this module.
 
-Response Formatter: No matter what format the response is in from the LLM, we will change it to a common response format.
+*Response Formatter: No matter what format the response is in from the LLM, we will change it to a common response format.*
 
-#4.
-Define Interfaces:
+
+</details>
+
+### 4. Define Interfaces:
 Every module should expose one interface.
 EmbeddingProvide, LLMProvider, etc..
 
-#5.
-Configuration-Driven Design:
+### 5. Configuration-Driven Design:
 We will not change the modules inside the main orchestrator, instead, 
 we will add them in a configuration file.
 
-##6. dependency injection -> take care from beginning itself.
+### 6. dependency injection -> take care from beginning itself.
 
-##7. Final architecture:
+### 7. Final architecture:
 INGESTION - Offline
-
-Documents
-    │
-Loader
-    │
-Preprocessor
-    │
-Chunker
-    │
-Embedding
-    │
-Indexer
-    │
-FAISS
-
-==============================
+```
+         Documents
+            │
+          Loader
+            │
+        Preprocessor
+            │
+         Chunker
+            │
+         Embedding
+            │
+         Indexer
+            │
+          FAISS
+```
 
 QUERY
+```
+         Question
+            │
+         Embedding
+            │
+         Retriever
+            │
+        Context Builder
+            │
+        Prompt Builder
+            │
+           LLM
+            │
+         Formatter
+            │
+         Response
+```
 
-Question
-    │
-Embedding
-    │
-Retriever
-    │
-Context Builder
-    │
-Prompt Builder
-    │
-LLM
-    │
-Formatter
-    │
-Response
+### 8. Application Boot Sequence
 
-##8. 
-Application Boot Sequence
-When FastAPI starts, what exactly should happen?
+*When FastAPI starts, what exactly should happen?*
+```
+        FastAPI Starts
+            │
+            ▼
+        Read Configuration
+            │
+            ▼
+        Initialize Logger
+            │
+            ▼
+        Load Embedding Model
+            │
+            ▼
+        Load Vector Index
+            │
+            ▼
+        Create Retriever
+            │
+            ▼
+        Create LLM Provider
+            │
+            ▼
+        Create Chat Service
+            │
+            ▼
+        Register API Routes
+            │
+            ▼
+        Ready
+```
 
-FastAPI Starts
-    │
-    ▼
-Read Configuration
-    │
-    ▼
-Initialize Logger
-    │
-    ▼
-Load Embedding Model
-    │
-    ▼
-Load Vector Index
-    │
-    ▼
-Create Retriever
-    │
-    ▼
-Create LLM Provider
-    │
-    ▼
-Create Chat Service
-    │
-    ▼
-Register API Routes
-    │
-    ▼
-Ready
+**models are loaded only once, not on every request.**
 
-models are loaded only once, not on every request.
-
-#Application Container: or: Dependency Injection Container
+Application Container: or: Dependency Injection Container
 Configuration
 Dependency Graph
 Service Lifetime
@@ -157,7 +159,8 @@ Request Lifecycle
 Error Flow
 Health Checks
 
-Final Runtime Architecture:
+## Final Runtime Architecture:
+```
                 FastAPI
 
                     │
@@ -187,11 +190,13 @@ Final Runtime Architecture:
                           │
 
                        Response
-                    
-##9. Dir structure
+```     
+### 9. Dir structure
 We will create one dir for each replaceable module or package.
 Strategy Pattern + Dependency Injection.
 
+<details>
+<summary>Dir structure</summary>
 app/
 
 ├── llm/
@@ -229,9 +234,12 @@ app/
 │   └── chat_service.py
 │
 └── container.py
+</details>
 
 directories structure for now:
+---
 
+```
 interview-assis or app/
 |
 ├── llm/
@@ -249,3 +257,5 @@ interview-assis or app/
 │
 ├── container.py
 └── main.py
+```
+
