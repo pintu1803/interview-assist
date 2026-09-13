@@ -259,3 +259,51 @@ interview-assis or app/
 └── main.py
 ```
 
+                 Java Interview Documents
+                          │
+                Chunking + Metadata
+                          │
+                  Embedding Model
+                          │
+                 Vector Database (HNSW)
+                          │
+                          │
+────────────────────────────────────────────────────
+                          │
+                     User Question
+                          │
+                    Query Rewriter
+                          │
+          ┌───────────────┴────────────────┐
+          ▼                                ▼
+      BM25 Search                    Vector Search
+          │                                │
+          └───────────────┬────────────────┘
+                          ▼
+                  Candidate Documents
+                          ▼
+              Cross-Encoder Reranker
+                          ▼
+                 Top 5–10 Chunks
+                          ▼
+                         LLM
+                          ▼
+      Interview Answer + References + Follow-up Questions
+
+Vercel
+ |
+React
+
+Render|AWS Lambda
+ |
+FastAPI
+
+Qdrant Cloud
+ |
+Vectors
+
+Gemini API
+ |
+LLM
+
+Built a serverless RAG-based Java interview assistant using AWS Lambda, S3, Qdrant vector search, and Gemini LLM APIs."
