@@ -2,3 +2,8 @@ fastapi
 uvicorn
 
 pydantic-settings
+sentence-transformers
+faiss-cpu
+
+ABC
+typing
