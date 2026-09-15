@@ -78,6 +78,21 @@ we will add them in a configuration file.
 
 ### 6. dependency injection -> take care from beginning itself.
 
+<details>
+<summary> Retriever Hides the internal mechanism of fetching chunks for given query</summary>
+User Query
+    |
+    v
+Retriever
+    |
+    +---- Embedding Model
+    |
+    +---- Vector Store
+    |
+    v
+Relevant Chunks
+</details>
+
 ### 7. Final architecture:
 INGESTION - Offline
 ```

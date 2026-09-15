@@ -14,8 +14,8 @@ class SentenceTransformerEmbedding(EmbeddingModel):
     to search and fetch from database, cosine similarity is used,
     normalize vecotors have magnitude = 1, so cosine similarity becomes faster.
     """
-    def __init__(self, model_name="all-MiniLM-L6-v2"):
-        self.model = SentenceTransformer(model_name)
+    def __init__(self, model_name, cache_folder):
+        self.model = SentenceTransformer(model_name_or_path=model_name, cache_folder=cache_folder)
         
 
     def embed(self, texts: List[str]) -> List[List[float]]:

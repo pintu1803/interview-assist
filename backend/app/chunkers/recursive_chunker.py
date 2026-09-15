@@ -12,7 +12,6 @@ class RecursiveChunker(Chunker):
         self.overlap = overlap
 
     #################################
-    @abstractmethod
     def chunk(self, documents: List[Document]) -> List[Chunk]:
         result = []
         separators = ["\n\n", "\n", ".", ""]
@@ -81,4 +80,7 @@ class RecursiveChunker(Chunker):
         #if at the end current holds some text
         if current:
             chunks.append(current.strip())
+
+        #return the merged list
+        return chunks
             
