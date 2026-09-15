@@ -20,7 +20,7 @@ def create_ingest_service():
     embedding_model = SentenceTransformerEmbedding(settings.embedding_model, settings.hf_cache_dir)
     print("Embedding model done")
 
-    vector_store = FAISSVectorStore(768)
+    vector_store = FAISSVectorStore(settings.embedding_dimension)
     print("Vector store done")
 
     return IngestionService(doc_loader, doc_chunker, embedding_model, vector_store)

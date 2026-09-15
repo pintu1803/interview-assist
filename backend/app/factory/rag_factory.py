@@ -11,7 +11,7 @@ def create_rag_service():
 
     embedding_model = SentenceTransformerEmbedding(settings.embedding_model, settings.hf_cache_dir)
 
-    vector_store = FAISSVectorStore(dimension=384)
+    vector_store = FAISSVectorStore(settings.embedding_dimension)
 
     retriever = VectorRetriever(embedding_model, vector_store)
 

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     embedding_model: str
     gemini_api_key: str
     vector_db_path: str
+    embedding_dimension: int
 
     class Config: 
         env_file = ".env"
