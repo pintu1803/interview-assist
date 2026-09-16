@@ -36,7 +36,7 @@ class RecursiveChunker(Chunker):
         return result
 
     #################################
-    def _split(self, content: str, separators: List[str]) -> List[Chunk]:
+    def _split(self, content: str, separators: List[str]) -> List[str]:
         result = []
 
         #if the document itself is small
@@ -64,7 +64,7 @@ class RecursiveChunker(Chunker):
         return result
 
     #################################
-    def _merge_chunks(self, pieces):
+    def _merge_chunks(self, pieces: List[str]) -> List[str]:
         chunks = []
 
         current = ""

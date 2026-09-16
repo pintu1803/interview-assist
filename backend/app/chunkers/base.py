@@ -11,5 +11,5 @@ class Chunker(ABC):
     It accepts a list of documents(one or many) and converts into list of chunks
     """
     @abstractmethod
-    def chunk(self, document: List[Document]) -> List[Chunk]:
+    def chunk(self, documents: List[Document]) -> List[Chunk]:
         pass
