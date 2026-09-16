@@ -7,7 +7,7 @@ from typing import List
 class JavaPrompt(PromptBuilder):
 
     def build(self, question:str, chunks:List[Chunk]):
-        context = "\n\n".join(chunk for chunk in chunks)
+        context = "\n\n".join(chunk.text for chunk in chunks)
 
         prompt = f"""You are a Java Interview Assistant.
         Answer the question below only using the provided context

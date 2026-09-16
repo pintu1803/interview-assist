@@ -26,7 +26,7 @@ class PDFLoader(DocumentLoader):
                     content=text,
                         metadata={
                             "source": str(file_path),
-                            "type": "text"
+                            "type": text
                         }
                     )
                 )

@@ -1,10 +1,5 @@
 import chromadb
 import uuid
-import numpy as np
-
-#needed for chroma db method hints
-from collections.abc import Sequence
-
 from typing import List
 
 from app.vectorstore.base import VectorStore
