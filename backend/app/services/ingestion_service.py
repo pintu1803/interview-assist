@@ -36,18 +36,21 @@ class IngestionService:
         print("Ingest: chunk split")
 
         # 3. Create embeddings
-        texts = [chunk.text for chunk in chunks]
+        list_texts = [chunk.text for chunk in chunks]
+        list_metadatas = [chunk.metadata for chunk in chunks]
         print("Ingest: text done")
-        print(f"Number of chunks: {len(texts)}")
-        print("Total characters:", sum(len(t) for t in texts))
+        print(f"Number of chunks: {len(list_texts)}")
+        print("Total characters:", sum(len(t) for t in list_texts))
 
         embeddings = (
             self.embedding_model.embed(
-                texts
+                list_texts
             )
         )
-        print("Ingest: chunk done")
+        print("Ingest: chunk embedding done")
 
         # 4. Store vectors + chunks
-        self.vector_store.store(chunks, embeddings)
+        self.vector_store.add_documents(documents=list_texts, 
+                                        metadatas=list_metadatas, 
+                                        embeddings=embeddings)
         print("Ingest: db store done")

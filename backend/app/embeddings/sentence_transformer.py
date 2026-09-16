@@ -2,6 +2,7 @@
 from app.embeddings.base import EmbeddingModel
 from typing import List
 from sentence_transformers import SentenceTransformer
+from app.config.types import EmbeddingVector
 
 class SentenceTransformerEmbedding(EmbeddingModel):
     """
@@ -18,9 +19,8 @@ class SentenceTransformerEmbedding(EmbeddingModel):
         self.model = SentenceTransformer(model_name_or_path=model_name, cache_folder=cache_folder)
         
 
-    def embed(self, texts: List[str]) -> List[List[float]]:
-        embeddings = self.model.encode(texts, 
-                                       normalize_embeddings=True)
+    def embed(self, texts: List[str]) -> List[EmbeddingVector]:
+        embeddings = self.model.encode(texts, normalize_embeddings=True)
         return embeddings.tolist()
 
         

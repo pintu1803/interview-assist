@@ -1,12 +1,9 @@
 import chromadb
 import uuid
-from typing import List
+from typing import List, TypedDict
 
 from app.vectorstore.base import VectorStore
-
-from chromadb.api.types import Metadata
-from chromadb.api.types import QueryResult
-from chromadb.api.types import Embedding
+from app.config.types import (EmbeddingVector, ChunkMetadata, RetrievedChunk)
 
 
 class ChromaVectorStore(VectorStore):
@@ -23,6 +20,7 @@ class ChromaVectorStore(VectorStore):
     "ids":[ [id1, id2], [id3, id4] ]
     "documents":[ [doc1, doc2], [doc3, doc5] ]
     "chunk_ids": [ [], [] ]
+    So, QueryResult is just QueryResult, not List
 
     """
     #initialize db client and collection
@@ -41,25 +39,29 @@ class ChromaVectorStore(VectorStore):
 
     #given vector, document and metadata, add a row in database
     def add_documents(self, documents:List[str], 
-                      embeddings:List[Embedding], 
-                      metadatas:List[Metadata]) -> None:
+                      embeddings:List[EmbeddingVector], 
+                      metadatas:List[ChunkMetadata]) -> None:
 
         ids = [str(uuid.uuid4()) for _ in documents ]
 
         self.collection.add(
             documents=documents,
             embeddings=embeddings,
-            metadatas=metadatas,
+            metadatas=metadatas, # type: ignore
             ids=ids
         )
 
     #method for performing similarity search -> gives top K results
-    def similarity_search(self, query_embedding:Embedding, k=5) -> QueryResult:
+    def similarity_search(self, query_embedding:EmbeddingVector, k=5) -> RetrievedChunk:
 
         results = self.collection.query(
-            query_embeddings=query_embedding,
+            query_embeddings=[query_embedding],
             n_results=k
         )
 
-        return results
+        res: RetrievedChunk = {"documents":[], "metadatas":[], "distances":[]}
+        res["documents"] = results["documents"][0] # type: ignore
+        res["distances"] = results["distances"][0], # type: ignore
+        res["metadatas"]= results["metadatas"][0] # type: ignore
+        return res
     

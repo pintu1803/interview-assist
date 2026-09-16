@@ -4,6 +4,7 @@ from typing import List
 from app.models.document import Document
 from app.models.chunk import Chunk
 from app.chunkers.base import Chunker
+from app.config.types import ChunkMetadata
 
 class FixedSize(Chunker):
 
@@ -16,21 +17,21 @@ class FixedSize(Chunker):
         for document in documents:
 
             content = document.content
-            metadata = document.metadata.copy()
             #refrain modifying source metadata
 
-            start_index = 0
+            chunk_id = 1
             for i in range(0, len(content), self.chunk_size):
-                last_index = (start_index + self.chunk_size)
+                last_index = (i + self.chunk_size)
                 last_index = len(content) if last_index >= len(content) else last_index
 
-                text = content[start_index:last_index]
+                text = content[i:last_index]
 
-                start_index = last_index
-
-                metadata["start"] = start_index
-                metadata["end"] = last_index
-
+                doc_metadata = document.metadata.copy()
+                metadata: ChunkMetadata = {"source":doc_metadata["source"], 
+                                            "type":doc_metadata["type"], 
+                                            "chunk_id":chunk_id}
+                chunk_id += 1
+                
                 chunks.append(
                     Chunk(
                         text=text,
