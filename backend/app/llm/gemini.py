@@ -1,15 +1,29 @@
 from app.llm.base import LLM
-from google import generativeai as genai
+from google import genai
+from app.config.settings import settings
 
 class GeminiLLM(LLM):
 
     def __init__(self, api_key:str):
         genai.configure(api_key=api_key)
 
-        self.model = genai.GenerativeModel("gemini-2.5-flash")
+        self.client = genai.Client(api_key=settings.gemini_api_key   )
 
     def generate(self, prompt:str)-> str:
-        response = self.model.generate_content(prompt)
-        print("Type of the llm response : ", type(response))
+        response = self.client.models.generate_content(
+                        model=settings.gemini_model,
+                        contents="hello google",
+                    )
+
         return response.text
-        
+
+
+
+client = genai.Client(api_key=settings.gemini_api_key)
+
+response = client.models.generate_content(
+                model=settings.gemini_model,
+                contents="hello google",
+            )
+
+print("Response = ", response.text)
