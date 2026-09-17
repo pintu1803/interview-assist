@@ -4,6 +4,7 @@ from typing import List
 from app.models.document import Document
 from app.models.chunk import Chunk
 from app.chunkers.base import Chunker
+from app.config.types import ChunkMetadata
 
 class RecursiveChunker(Chunker):
 
@@ -23,9 +24,11 @@ class RecursiveChunker(Chunker):
             merged_chunks = self._merge_chunks(pieces)
 
             for index, text in enumerate(merged_chunks):
-                metadata = document.metadata.copy()
-                metadata["chunk_id"] = index
-
+                doc_metadata = document.metadata.copy()
+                metadata: ChunkMetadata = {"source":doc_metadata["source"], 
+                                           "type":doc_metadata["type"], 
+                                           "chunk_id":index}
+                
                 result.append(
                     Chunk(
                         text = text,
