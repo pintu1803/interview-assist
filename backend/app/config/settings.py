@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     gemini_model: str
     vector_db_path: str
     embedding_dimension: int
+    db_collection_name: str
+    chunk_size: int
+    overlap_size: int
 
     # class Config: 
     #     env_file = ".env"
