@@ -1,4 +1,3 @@
-from app.services.rag_service import RAGService
 from app.factory.rag_factory import create_rag_service
 from app.container import container
 

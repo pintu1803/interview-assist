@@ -1,5 +1,3 @@
-from typing import List
-
 from app.loaders.base import DocumentLoader
 from app.chunkers.base import Chunker
 from app.embeddings.base import EmbeddingModel

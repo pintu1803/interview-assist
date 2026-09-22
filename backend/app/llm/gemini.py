@@ -15,15 +15,18 @@ class GeminiLLM(LLM):
                         contents="hello google",
                     )
 
+        if response.text is None:
+            raise RuntimeError("Gemini returned no text")
         return response.text
 
+# command to run
+# python -m app.llm.gemini
 
+# client = genai.Client(api_key=settings.gemini_api_key)
 
-client = genai.Client(api_key=settings.gemini_api_key)
+# response = client.models.generate_content(
+#                 model=settings.gemini_model,
+#                 contents="hello google! describe main componenets of kafka",
+#             )
 
-response = client.models.generate_content(
-                model=settings.gemini_model,
-                contents="hello google",
-            )
-
-print("Response = ", response.text)
+# print("Response = ", response.text)

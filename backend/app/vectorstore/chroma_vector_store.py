@@ -59,6 +59,8 @@ class ChromaVectorStore(VectorStore):
             n_results=k
         )
 
+        print("DB show me the results fetched : ", results)
+
         res: RetrievedChunk = {"documents":[], "metadatas":[], "distances":[]}
         res["documents"] = results["documents"][0] # type: ignore
         res["distances"] = results["distances"][0], # type: ignore

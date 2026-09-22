@@ -5,7 +5,7 @@ pydantic-settings
 sentence-transformers
 faiss-cpu
 
-google-generativeai
+google-genai
 
 ABC
 typing

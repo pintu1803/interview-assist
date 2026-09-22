@@ -2,7 +2,7 @@ from app.config.settings import settings
 from app.loaders.pdf_loader import PDFLoader
 from app.chunkers.recursive_chunker import RecursiveChunker
 from app.embeddings.sentence_transformer import SentenceTransformerEmbedding
-from app.vectorstore.faiss_store import FAISSVectorStore
+from app.vectorstore.chroma_vector_store import ChromaVectorStore
 from app.services.ingestion_service import IngestionService 
 
 
@@ -20,7 +20,7 @@ def create_ingest_service():
     embedding_model = SentenceTransformerEmbedding(settings.embedding_model, settings.hf_cache_dir)
     print("Embedding model done")
 
-    vector_store = FAISSVectorStore(settings.embedding_dimension)
+    vector_store = ChromaVectorStore()
     print("Vector store done")
 
     return IngestionService(doc_loader, doc_chunker, embedding_model, vector_store)

@@ -1,4 +1,4 @@
-from chromadb.api.types import QueryResult
+from app.config.types import (RetrievedChunk)
 from abc import ABC, abstractmethod
 from typing  import List
 
@@ -9,5 +9,5 @@ class Retriever:
     internal working is hidden from user
     So, query : str """
     @abstractmethod
-    def retrieve(self, query:str, top_k:int=5) -> List[QueryResult]:
+    def retrieve(self, query:str, top_k:int=5) -> RetrievedChunk:
         pass
