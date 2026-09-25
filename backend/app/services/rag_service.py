@@ -16,10 +16,10 @@ class RAGService():
         
     def ask(self, query:str):
         retrieved_chunks = self.retriever.retrieve(query)
-        print("Show me the retrieved chunks : ", retrieved_chunks)
+        # print("Show me the retrieved chunks : ", retrieved_chunks)
 
         prompt = self.prompt_builder.build(query, retrieved_chunks)
-        print("Show me the prompt : ", prompt)
+        # print("Show me the prompt : ", prompt)
 
         response = self.llm.generate(prompt)
 

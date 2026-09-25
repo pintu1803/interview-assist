@@ -9,7 +9,3 @@ app = FastAPI(
 )
 
 app.include_router(health_router)
-
-@app.post("/ask")
-def ask():
-    main("D:/Projects/python/ai-lab/interview-assist/backend/knowledge_base/java/jvmti.html")

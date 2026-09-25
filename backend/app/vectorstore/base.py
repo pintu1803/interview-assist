@@ -26,6 +26,10 @@ class VectorStore(ABC):
         pass
 
 
+    @abstractmethod
+    def reset():
+        pass
+
 
 
 

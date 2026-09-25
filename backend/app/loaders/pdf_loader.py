@@ -11,9 +11,9 @@ class PDFLoader(DocumentLoader):
 
     def load(self, path: str) -> List[Document]:
 
-        file_path = Path(path)
+        file_path = Path(path).resolve()
 
-        reader = PdfReader(path)
+        reader = PdfReader(file_path)
 
         documents = []
 
@@ -26,7 +26,7 @@ class PDFLoader(DocumentLoader):
                     content=text,
                         metadata={
                             "source": str(file_path),
-                            "type": text
+                            "type": "pdf"
                         }
                     )
                 )

@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from typing import List
 
 from app.models.document import Document
@@ -31,7 +30,7 @@ class FixedSize(Chunker):
                                             "type":doc_metadata["type"], 
                                             "chunk_id":chunk_id}
                 chunk_id += 1
-                
+
                 chunks.append(
                     Chunk(
                         text=text,

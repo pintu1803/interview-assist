@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from typing import List
 
 from app.models.document import Document
@@ -47,7 +46,7 @@ class RecursiveChunker(Chunker):
             return [content]
 
         #if no separator is mentioned
-        if not separators:
+        if not separators or separators[0] == "":
             for i in range(0, len(content), self.chunk_size):
                 end_index = i + self.chunk_size
                 end_index = end_index if end_index < len(content) else len(content)
@@ -55,7 +54,9 @@ class RecursiveChunker(Chunker):
             return result
 
         #now split using separator first
-        pieces = content.split(separators[0])
+        separator = separators[0]
+        parts = content.split(separator)
+        pieces = [part + separator for part in parts[:-1]] + [parts[-1]]
 
         for piece in pieces:
             if len(piece) <= self.chunk_size:
@@ -77,7 +78,7 @@ class RecursiveChunker(Chunker):
                 current += piece + " "
             else:
                 chunks.append(current.strip())
-                overlap_text = current[-self.chunk_size:]
+                overlap_text = current[-self.overlap:] #retain the overlap text from prev. chunk
                 current = overlap_text + " " + piece + " "
 
         #if at the end current holds some text

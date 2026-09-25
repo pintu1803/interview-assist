@@ -1,6 +1,7 @@
 import chromadb
 import uuid
 from typing import List, TypedDict
+from app.config.settings import settings
 
 from app.vectorstore.base import VectorStore
 from app.config.types import (EmbeddingVector, ChunkMetadata, RetrievedChunk)
@@ -24,14 +25,13 @@ class ChromaVectorStore(VectorStore):
 
     """
     #initialize db client and collection
-    def __init__(self,
-                persist_directory="storage/chroma_db",
-                collection_name="documents"
-                ):
+    def __init__(self, persist_directory, collection_name):
         
         self.client = chromadb.PersistentClient(
             path=persist_directory
         )
+
+        self.collection_name = collection_name
 
         self.collection = self.client.get_or_create_collection(
             name=collection_name
@@ -59,11 +59,13 @@ class ChromaVectorStore(VectorStore):
             n_results=k
         )
 
-        print("DB show me the results fetched : ", results)
-
         res: RetrievedChunk = {"documents":[], "metadatas":[], "distances":[]}
         res["documents"] = results["documents"][0] # type: ignore
         res["distances"] = results["distances"][0], # type: ignore
         res["metadatas"]= results["metadatas"][0] # type: ignore
         return res
-    
+
+
+    def reset(self):
+        self.client.delete_collection(self.collection_name)
+        self.collection = self.client.get_or_create_collection(name=self.collection_name)

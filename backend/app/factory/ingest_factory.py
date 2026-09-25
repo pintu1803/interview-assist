@@ -12,15 +12,17 @@ def create_ingest_service():
     We are creating objects like hardcoding and creating the intestion service object using them."""
 
     doc_loader = PDFLoader()
-    print("Loaded one")
+    print("Pdf document loader loaded..")
 
-    doc_chunker = RecursiveChunker(chunk_size=500, overlap=100)
-    print("Chunker done")
+    doc_chunker = RecursiveChunker(chunk_size=settings.chunk_size, overlap=settings.overlap_size)
+    print("Recursive chunker loaded..")
 
     embedding_model = SentenceTransformerEmbedding(settings.embedding_model, settings.hf_cache_dir)
-    print("Embedding model done")
+    print("Sentence transformer embedding model loaded..")
 
-    vector_store = ChromaVectorStore()
-    print("Vector store done")
+    vector_store = ChromaVectorStore(settings.vector_db_path, settings.db_collection_name)
+    print("Chroma db vector store chosen..")
+    vector_store.reset()
 
+    print("Returning the ingestion object with doc loader, chunker, embedder and vector db configured..")
     return IngestionService(doc_loader, doc_chunker, embedding_model, vector_store)
