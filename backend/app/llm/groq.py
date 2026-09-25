@@ -6,7 +6,8 @@ GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
 class GroqLLM(LLM):
 
-    def __init__(self, api_key:str):
+    def __init__(self, api_key:str, model:str):
+        self.model = model
         self.client = OpenAI(api_key=api_key,
                              base_url=GROQ_BASE_URL)
 
@@ -14,7 +15,7 @@ class GroqLLM(LLM):
 
         try:           
             response = self.client.chat.completions.create(
-                            model=settings.groq_model,
+                            model=self.model,
                             messages=[
                                         {
                                             "role": "system",

@@ -5,7 +5,8 @@ from openai import OpenAI
 
 class OpenAILLM(LLM):
 
-    def __init__(self, api_key:str):
+    def __init__(self, api_key:str, model:str):
+        self.model = model
         self.client = OpenAI(api_key=api_key)
 
     def generate(self, prompt:str)-> str:
@@ -16,7 +17,7 @@ class OpenAILLM(LLM):
                              "content": prompt})
             
             response = self.client.chat.completions.create(
-                            model=settings.openai_model,
+                            model=self.model,
                             messages=messages,
                             temperature=0.2
                         )

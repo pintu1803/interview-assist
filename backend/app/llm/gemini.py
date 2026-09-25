@@ -4,14 +4,15 @@ from app.config.settings import settings
 
 class GeminiLLM(LLM):
 
-    def __init__(self, api_key:str):
+    def __init__(self, api_key:str, model:str):
+        self.model = model 
         self.client = genai.Client(api_key=api_key)
 
     def generate(self, prompt:str)-> str:
 
         try:
             response = self.client.models.generate_content(
-                            model=settings.gemini_model,
+                            model=self.model,
                             contents=prompt,
                         )
 
