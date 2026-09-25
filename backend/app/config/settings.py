@@ -22,8 +22,14 @@ class Settings(BaseSettings):
     db_collection_name: str
     chunk_size: int
     overlap_size: int
+    llm_providers: str
 
-    llm_choice: str
+    @property
+    def llm_provider_list(self):
+        return [
+            provider.strip()
+            for provider in self.llm_providers.split(",")
+        ]
 
     # class Config: 
     #     env_file = ".env"

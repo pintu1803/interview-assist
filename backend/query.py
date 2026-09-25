@@ -3,7 +3,7 @@ from app.container import container
 from app.config.settings import settings
 
 
-rag_service = create_rag_service(settings.llm_choice)
+rag_service = create_rag_service()
 
 #main method
 def main(question):

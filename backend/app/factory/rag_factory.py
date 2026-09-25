@@ -5,6 +5,7 @@ from app.retriever.vector_retriever import VectorRetriever
 from app.llm.gemini import GeminiLLM
 from app.llm.chatgpt import OpenAILLM
 from app.llm.groq import GroqLLM
+from app.factory.llm_factory import create_llm
 from app.prompts.java_prompt import JavaPrompt
 from app.services.rag_service import RAGService
 
@@ -20,16 +21,8 @@ def create_rag_service(llm_choice:str="gemini"):
     retriever = VectorRetriever(embedding_model, vector_store)
     print("Vector retriever (embed the query and similarity search in db) module loaded..")
 
-    llm = GeminiLLM(settings.gemini_api_key)
-
-    if llm_choice == "gemini":
-        print("Gemini LLM model loaded..")
-    elif llm_choice == "openai":
-        llm = OpenAILLM(settings.openai_api_key)
-        print("OpenAI LLM model loaded..")
-    elif llm_choice == "groq":
-        llm = GroqLLM(settings.groq_api_key)
-        print("Groq LLM model loaded..")
+    llm = create_llm()
+    print("Fallback LLM models loaded..")
 
     prompt_builder = JavaPrompt()
     print("Java prompt builder loaded..")
