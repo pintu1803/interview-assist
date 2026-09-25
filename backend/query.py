@@ -1,8 +1,9 @@
 from app.factory.rag_factory import create_rag_service
 from app.container import container
+from app.config.settings import settings
 
 
-rag_service = create_rag_service()
+rag_service = create_rag_service(settings.llm_choice)
 
 #main method
 def main(question):

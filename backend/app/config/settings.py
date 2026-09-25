@@ -13,11 +13,17 @@ class Settings(BaseSettings):
     embedding_model: str
     gemini_api_key: str
     gemini_model: str
+    openai_api_key: str
+    openai_model: str
+    groq_api_key: str
+    groq_model: str
     vector_db_path: str
     embedding_dimension: int
     db_collection_name: str
     chunk_size: int
     overlap_size: int
+
+    llm_choice: str
 
     # class Config: 
     #     env_file = ".env"
