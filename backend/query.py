@@ -4,6 +4,7 @@ from app.container import container
 
 rag_service = create_rag_service()
 
+#main method
 def main(question):
 
     response = rag_service.ask(
@@ -12,9 +13,18 @@ def main(question):
 
     print(response)
 
+#responsive infinite loop
+def QnA():
+    while(True):
+        query = input("Ask your question...")
+        if query in ["exit", "stop", "cancel", "pause", "done"]:
+            break
+        main(question=query)
 
 if __name__ == "__main__":
+    """
+    (.venv) PS D:\Projects\python\ai-lab\interview-assist\backend> python .\query.py
+    """
 
-    main(
-        "What is Sum Root to Leaf Numbers"
-    )
+    #run the chat loop
+    QnA()

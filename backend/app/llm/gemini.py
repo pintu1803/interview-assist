@@ -8,14 +8,18 @@ class GeminiLLM(LLM):
         self.client = genai.Client(api_key=api_key)
 
     def generate(self, prompt:str)-> str:
-        response = self.client.models.generate_content(
-                        model=settings.gemini_model,
-                        contents=prompt,
-                    )
 
-        if response.text is None:
-            raise RuntimeError("Gemini returned no text")
-        return response.text
+        try:
+            response = self.client.models.generate_content(
+                            model=settings.gemini_model,
+                            contents=prompt,
+                        )
+
+            if response.text is None:
+                raise RuntimeError("Gemini returned no text")
+            return response.text
+        except Exception as e:
+            return "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."
 
 # command to run
 # python -m app.llm.gemini
