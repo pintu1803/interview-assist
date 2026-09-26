@@ -15,7 +15,7 @@ class VectorRetriever(Retriever):
     def retrieve(self, query:str, top_k:int=5) -> RetrievedChunk:
         vector = self.embedding_model.embed([query])[0]
         results = self.vector_store.similarity_search(vector, top_k)
-        return results
+        return results  
 
 
         
