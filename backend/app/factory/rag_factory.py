@@ -2,9 +2,7 @@ from app.config.settings import settings
 from app.embeddings.sentence_transformer import SentenceTransformerEmbedding
 from app.vectorstore.chroma_vector_store import ChromaVectorStore
 from app.retriever.vector_retriever import VectorRetriever
-from app.llm.gemini import GeminiLLM
-from app.llm.chatgpt import OpenAILLM
-from app.llm.groq import GroqLLM
+from app.factory.raranker_factory import create_reranker
 from app.factory.llm_factory import create_llm
 from app.prompts.java_prompt import JavaPrompt
 from app.services.rag_service import RAGService
@@ -21,11 +19,14 @@ def create_rag_service(llm_choice:str="gemini"):
     retriever = VectorRetriever(embedding_model, vector_store)
     print("Vector retriever (embed the query and similarity search in db) module loaded..")
 
+    reranker = create_reranker(settings.reranker_provider)
+    print(f"{settings.reranker_provider} Reranker loaded..")
+
     llm = create_llm()
     print("Fallback LLM models loaded..")
 
     prompt_builder = JavaPrompt()
     print("Java prompt builder loaded..")
 
-    print("Returning the RAG object with embedder, vectorDB, vectorRetriever, LLM and prompt builder loaded..")
-    return RAGService(retriever, prompt_builder, llm)
+    print("Returning the RAG object with embedder, vectorDB, vectorRetriever, reranker, LLM and prompt builder loaded..")
+    return RAGService(retriever, reranker, prompt_builder, llm)
