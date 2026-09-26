@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     doc_storage: str
     ingestion_history: str
 
+    frontend_url: str
+
     @property
     def llm_provider_list(self):
         return [
