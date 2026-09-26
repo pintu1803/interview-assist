@@ -3,10 +3,12 @@ uvicorn
 
 pydantic-settings
 sentence-transformers
+torch==2.9.1
 faiss-cpu
+chromadb
 
 google-genai
 openai
 
-ABC
+# abc
 typing

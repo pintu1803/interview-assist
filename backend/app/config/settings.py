@@ -24,6 +24,12 @@ class Settings(BaseSettings):
     overlap_size: int
     llm_providers: str
 
+    topk: int
+
+    reranker_provider: str
+    reranker_model_name: str
+    rerank_topk: int
+
     @property
     def llm_provider_list(self):
         return [
