@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter
 from app.api.schemas.chat import (AskRequest, AskResponse)
 from app.factory.rag_factory import create_rag_service
 

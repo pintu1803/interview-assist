@@ -1,11 +1,12 @@
 from app.factory.ingest_factory import create_ingest_service
 from pathlib import Path
+from app.config.settings import settings
 
 #do it only once
 ingestion_service = create_ingest_service()
 
 #define the history path
-INGESTION_HISTORY = "D:/Projects/python/ai-lab/storage/ingestion_history.txt"
+INGESTION_HISTORY = settings.ingestion_history
 
 def main(path:str=""):
 
@@ -51,7 +52,7 @@ if __name__ == "__main__":
     already_ingested = load_ingested_files(INGESTION_HISTORY)
 
     #read the knowledge base dir
-    java_path = "D:/Projects/python/ai-lab/interview-assist/backend/knowledge_base/java"
+    java_path = settings.doc_storage
     directory = Path(java_path)
     list_of_pdfs = list(directory.glob("*.pdf")) #this gives full/absolute path, not just file names
 

@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     reranker_model_name: str
     rerank_topk: int
 
+    doc_storage: str
+    ingestion_history: str
+
     @property
     def llm_provider_list(self):
         return [
