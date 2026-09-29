@@ -181,6 +181,18 @@ export default function App() {
         <span className="brand">Prism</span>
         <span className="rule" />
         <span className="tag">Java interview assistant</span>
+        <div className="social">
+          <a href="https://x.com/okpintuok" target="_blank" rel="noopener noreferrer" title="X (Twitter)" aria-label="X (Twitter)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-6.6L4.6 22H1.5l8.1-9.3L1 2h7.1l4.9 6.1L18.9 2Zm-1.2 18h1.9L7.4 4H5.4l12.3 16Z" />
+            </svg>
+          </a>
+          <a href="https://linkedin.com/in/pinsaini-in" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z" />
+            </svg>
+          </a>
+        </div>
       </header>
 
       <main>
@@ -268,6 +280,9 @@ const STYLES = `
 .app .brand{font:italic 600 22px Georgia,"Iowan Old Style",serif; color:var(--text)}
 .app .rule{width:34px; height:3px; border-radius:2px; background:linear-gradient(90deg,var(--assistant),var(--teal))}
 .app .tag{color:var(--muted); font-size:13px}
+.app .social{margin-left:auto; display:flex; gap:12px; align-items:center; align-self:center}
+.app .social a{color:var(--muted); display:inline-flex; transition:color .15s}
+.app .social a:hover{color:var(--assistant)}
 
 .app main{flex:1; width:100%; max-width:760px; margin:0 auto; padding:32px 20px 24px}
 
