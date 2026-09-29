@@ -10,8 +10,12 @@ router = APIRouter(prefix="/chat", tags=["Chat"])
 @router.post("/ask", response_model=AskResponse)
 def ask_question(request : AskRequest):
 
-    #extract query from request and pass to inference engine
-    answer = rag_service.ask(request.question)
+    try:
+        #extract query from request and pass to inference engine
+        answer = rag_service.ask(request.question)
 
-    #wrap the response in AskResponse format and return
-    return AskResponse(answer=answer)
+        #wrap the response in AskResponse format and return
+        return AskResponse(answer=answer)
+    except Exception as e:
+        print("ERROR:", repr(e))
+        raise

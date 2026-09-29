@@ -1,6 +1,6 @@
 import chromadb
 import uuid
-from typing import List, TypedDict
+from typing import List
 from app.config.settings import settings
 
 from app.vectorstore.base import VectorStore
@@ -66,6 +66,7 @@ class ChromaVectorStore(VectorStore):
         return res
 
 
-    def reset(self):
-        self.client.delete_collection(self.collection_name)
-        self.collection = self.client.get_or_create_collection(name=self.collection_name)
+    #don't reset the db ever
+    # def reset(self):
+    #     self.client.delete_collection(self.collection_name)
+    #     self.collection = self.client.get_or_create_collection(name=self.collection_name)

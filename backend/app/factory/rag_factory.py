@@ -1,6 +1,6 @@
 from app.config.settings import settings
 from app.embeddings.sentence_transformer import SentenceTransformerEmbedding
-from app.vectorstore.chroma_vector_store import ChromaVectorStore
+from app.vectorstore.singleton_vectorstore import get_vector_store
 from app.retriever.vector_retriever import VectorRetriever
 from app.factory.raranker_factory import create_reranker
 from app.factory.llm_factory import create_llm
@@ -13,7 +13,7 @@ def create_rag_service(llm_choice:str="gemini"):
     embedding_model = SentenceTransformerEmbedding(settings.embedding_model, settings.hf_cache_dir)
     print("Sentence transformer embedding model loaded..")
 
-    vector_store = ChromaVectorStore(settings.vector_db_path, settings.db_collection_name)
+    vector_store = get_vector_store()
     print("Chroma db vector store chosen..")
 
     retriever = VectorRetriever(embedding_model, vector_store)
