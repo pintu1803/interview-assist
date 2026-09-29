@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FiMenu } from "react-icons/fi";
+import "./App.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -137,14 +138,10 @@ function Answer({ item, onFollowUp }) {
 
 /* ---------- Sidebar ---------- */
 
-function Sidebar({ open, setOpen, panel, setPanel, view, setView, email, setEmail, emailStatus, sendTranscript }) {
-  const togglePanel = (name) => {
+function Sidebar({ open, setOpen, panel, setPanel, setView }) {
+  const toggleContact = () => {
     if (!open) setOpen(true);
-    setPanel((p) => (p === name ? null : name));
-  };
-  const toggleView = () => {
-    if (!open) setOpen(true);
-    setView((v) => (v === "projects" ? "chat" : "projects"));
+    setPanel((p) => (p === "contact" ? null : "contact"));
   };
 
   return (
@@ -158,21 +155,23 @@ function Sidebar({ open, setOpen, panel, setPanel, view, setView, email, setEmai
         <FiMenu size={18} />
       </button>
 
-      <button className={`nav-item ${panel === "contact" ? "active" : ""}`} onClick={() => togglePanel("contact")} title="Contact us">
+      <button className={`nav-item ${panel === "contact" ? "active" : ""}`} onClick={toggleContact} title="Contact us">
         <Icon.chat width="18" height="18" />
         {open && <span>Contact us</span>}
       </button>
       {open && panel === "contact" && (
-        <div className="accordion">
+        <ul className="accordion">
           {SOCIAL.map((s) => {
             const SIcon = SOCIAL_ICON[s.key];
             return (
-              <a key={s.key} href={s.url} target="_blank" rel="noopener noreferrer" className="accordion-link">
-                <SIcon width="15" height="15" /> <span>{s.name}</span>
-              </a>
+              <li key={s.key}>
+                <a href={s.url} target="_blank" rel="noopener noreferrer" className="accordion-link">
+                  <SIcon width="15" height="15" /> <span>{s.name}</span>
+                </a>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
 
       <a className="nav-item" href={PORTFOLIO_URL} target="_blank" rel="noopener noreferrer" title="Portfolio">
@@ -180,27 +179,67 @@ function Sidebar({ open, setOpen, panel, setPanel, view, setView, email, setEmai
         {open && <span>Portfolio</span>}
       </a>
 
-      <button className={`nav-item ${view === "projects" ? "active" : ""}`} onClick={toggleView} title="Other projects">
+      <button className="nav-item" onClick={() => setView("projects")} title="Other projects">
         <Icon.grid width="18" height="18" />
         {open && <span>Other projects</span>}
       </button>
 
-      <button className={`nav-item ${panel === "email" ? "active" : ""}`} onClick={() => togglePanel("email")} title="Email me">
+      <button className="nav-item" onClick={() => setView("email")} title="Email me">
         <Icon.mail width="18" height="18" />
         {open && <span>Email me</span>}
       </button>
-      {open && panel === "email" && (
-        <div className="accordion">
-          <p className="accordion-hint">Send this session's Q&amp;A to your inbox.</p>
+    </nav>
+  );
+}
+
+/* ---------- Dedicated sub-pages ---------- */
+
+function BackButton({ onClick }) {
+  return (
+    <button className="back-btn" onClick={onClick} aria-label="Back to chat">
+      <Icon.chevron width="18" height="18" />
+      Back
+    </button>
+  );
+}
+
+function ProjectsPage({ onBack }) {
+  return (
+    <div className="app page">
+      <div className="page-inner">
+        <BackButton onClick={onBack} />
+        <section className="projects">
+          <h1>Other projects</h1>
+          <ul className="project-list">
+            {PROJECTS.map((p) => (
+              <li key={p.title}>
+                <a href={p.url} target="_blank" rel="noopener noreferrer">{p.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function EmailPage({ onBack, email, setEmail, emailStatus, sendTranscript }) {
+  return (
+    <div className="app page">
+      <div className="page-inner">
+        <BackButton onClick={onBack} />
+        <section className="email-page">
+          <h1>Email me the transcript</h1>
+          <p>Send this session's Q&amp;A to your inbox.</p>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
           <button className="accordion-btn" onClick={sendTranscript} disabled={emailStatus === "sending"}>
             {emailStatus === "sending" ? "Sending…" : "Send transcript"}
           </button>
           {emailStatus === "sent" && <p className="accordion-status ok">Sent — check your inbox.</p>}
           {emailStatus === "error" && <p className="accordion-status error">Couldn't send that. Check the address and try again.</p>}
-        </div>
-      )}
-    </nav>
+        </section>
+      </div>
+    </div>
   );
 }
 
@@ -214,8 +253,8 @@ export default function App() {
   const endRef = useRef(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [panel, setPanel] = useState(null); // 'contact' | 'email' | null
-  const [view, setView] = useState("chat"); // 'chat' | 'projects'
+  const [panel, setPanel] = useState(null); // 'contact' | null
+  const [view, setView] = useState("chat"); // 'chat' | 'projects' | 'email'
   const [txEmail, setTxEmail] = useState("");
   const [emailStatus, setEmailStatus] = useState(null); // null | 'sending' | 'sent' | 'error'
 
@@ -284,22 +323,31 @@ export default function App() {
     }
   };
 
+  if (view === "projects") {
+    return <ProjectsPage onBack={() => setView("chat")} />;
+  }
+
+  if (view === "email") {
+    return (
+      <EmailPage
+        onBack={() => setView("chat")}
+        email={txEmail}
+        setEmail={setTxEmail}
+        emailStatus={emailStatus}
+        sendTranscript={sendTranscript}
+      />
+    );
+  }
+
   return (
     <div className="app">
-      <style>{STYLES}</style>
-
       {sidebarOpen && <div className="backdrop" onClick={() => setSidebarOpen(false)} />}
       <Sidebar
         open={sidebarOpen}
         setOpen={setSidebarOpen}
         panel={panel}
         setPanel={setPanel}
-        view={view}
         setView={setView}
-        email={txEmail}
-        setEmail={setTxEmail}
-        emailStatus={emailStatus}
-        sendTranscript={sendTranscript}
       />
 
       <div className="shell">
@@ -310,18 +358,7 @@ export default function App() {
         </header>
 
         <main>
-          {view === "projects" ? (
-            <section className="projects">
-              <h1>Other projects</h1>
-              <ul className="project-list">
-                {PROJECTS.map((p) => (
-                  <li key={p.title}>
-                    <a href={p.url} target="_blank" rel="noopener noreferrer">{p.title}</a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : thread.length === 0 ? (
+          {thread.length === 0 ? (
             <section className="empty">
               <h1>Ask anything from your Java interview material</h1>
               <p>Answers are pulled from the documents model have indexed. Try one of these:</p>
@@ -377,160 +414,3 @@ export default function App() {
     </div>
   );
 }
-
-/* ---------- Styles ---------- */
-
-const STYLES = `
-html, body, #root{height:100%; margin:0; padding:0}
-#root{max-width:none; text-align:left}
-
-.app{
-  text-align:left;
-  height:100vh; height:100dvh;
-  overflow:hidden;
-  --ink:#12151c; --panel:#1b1f29; --panel-2:#232838; --text:#f5f4f0;
-  --muted:#8b93a7; --accent:#e8a33d; --assistant:#d97757; --teal:#4fb8af; --danger:#e0716b;
-  --border:rgba(255,255,255,.09);
-  display:flex; flex-direction:row;
-  background:var(--ink); color:var(--text);
-  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-}
-.app *{box-sizing:border-box}
-.app button{font:inherit; cursor:pointer}
-.app button:focus-visible,.app textarea:focus-visible,.app a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
-
-.app .icon-btn{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:26px; height:26px; padding:0; flex:none;
-  background:var(--panel-2); border:1px solid var(--border); border-radius:6px; color:var(--muted);
-  transition:color .15s, border-color .15s;
-}
-.app .icon-btn:hover{color:var(--text); border-color:var(--assistant)}
-
-/* Sidebar */
-.app .backdrop{display:none}
-.app .sidebar{
-  flex:none; height:100%; width:56px; overflow-y:auto; overflow-x:hidden;
-  display:flex; flex-direction:column; gap:4px;
-  background:var(--panel); border-right:1px solid var(--border);
-  padding:12px 8px; transition:width .18s ease;
-}
-.app .sidebar.open{width:210px}
-.app .rail-toggle{
-  align-self:flex-end; width:30px; height:30px; margin-bottom:8px; flex:none;
-  display:flex; align-items:center; justify-content:center;
-  color: #1f2937;
-  background:none; border:1px solid var(--border); border-radius:7px; color:var(--muted);
-}
-.app .sidebar.collapsed .rail-toggle{align-self:center}
-.app .rail-toggle:hover{color:var(--text); border-color:var(--assistant)}
-.app .nav-item{
-  display:flex; align-items:center; gap:10px; padding:9px; border-radius:8px;
-  background:none; border:none; color:var(--muted); text-align:left; width:100%; text-decoration:none; flex:none;
-  transition:background .15s, color .15s;
-}
-.app .sidebar.collapsed .nav-item{justify-content:center}
-.app .nav-item:hover{background:var(--panel-2); color:var(--text)}
-.app .nav-item.active{color:var(--assistant); background:var(--panel-2)}
-.app .nav-item span{font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.app .accordion{display:flex; flex-direction:column; gap:8px; padding:6px 9px 14px}
-.app .accordion-link{display:flex; align-items:center; gap:9px; color:var(--muted); font-size:13px; text-decoration:none}
-.app .accordion-link:hover{color:var(--assistant)}
-.app .accordion-hint{color:var(--muted); font-size:11.5px; margin:0 0 8px}
-.app .accordion input{
-  width:100%; background:var(--panel-2); border:1px solid var(--border); color:var(--text);
-  border-radius:6px; padding:8px 9px; font:inherit; font-size:12.5px; margin-bottom:8px;
-}
-.app .accordion input:focus{outline:none; border-color:var(--assistant)}
-.app .accordion-btn{width:100%; background:var(--assistant); color:#1a0d08; border:none; border-radius:6px; padding:8px; font-weight:600; font-size:12.5px}
-.app .accordion-btn:disabled{opacity:.5}
-.app .accordion-status{font-size:11.5px; margin:8px 0 0}
-.app .accordion-status.ok{color:var(--teal)}
-.app .accordion-status.error{color:var(--danger)}
-
-/* Shell (header + main + footer), to the right of the sidebar */
-.shell{flex:1 1 auto; min-width:0; height:100%; display:flex; flex-direction:column; overflow:hidden}
-
-.app header{flex:none; display:flex; align-items:baseline; gap:10px; padding:calc(16px + env(safe-area-inset-top,0px)) 20px 16px; border-bottom:1px solid var(--border)}
-.app .brand{font:italic 600 22px Georgia,"Iowan Old Style",serif; color:var(--text); cursor:pointer; background:none; border:none}
-.app .rule{width:34px; height:3px; border-radius:2px; background:linear-gradient(90deg,var(--assistant),var(--teal))}
-.app .tag{color:var(--muted); font-size:13px}
-
-.app main{flex:1 1 auto; min-height:0; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; width:100%; max-width:760px; margin:0 auto; padding:32px 20px 24px}
-
-.app .empty h1{font:600 28px/1.25 Georgia,"Iowan Old Style",serif; margin:24px 0 8px; max-width:20ch; color:var(--text)}
-.app .empty p{color:var(--muted); margin:0 0 20px}
-.app .chips{display:flex; flex-wrap:wrap; gap:8px}
-.app .chip{
-  background:var(--panel); color:var(--text); border:1px solid var(--border);
-  border-radius:8px; padding:8px 12px; font-size:13.5px; text-align:left;
-  transition:border-color .15s;
-}
-.app .chip:hover{border-color:var(--assistant)}
-
-.app .projects h1{font:600 24px/1.3 Georgia,"Iowan Old Style",serif; margin:0 0 18px; color:var(--text)}
-.app .project-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px}
-.app .project-list a{display:block; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:15px; transition:border-color .15s, color .15s; text-decoration:none}
-.app .project-list a:hover{border-color:var(--assistant); color:var(--assistant)}
-
-.app .turn{margin-bottom:32px}
-.app .q-row{display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-bottom:10px}
-.app .q{width:fit-content; max-width:85%; color:var(--text); background:var(--panel-2); border:1px solid var(--border); border-radius:12px 12px 2px 12px; padding:10px 14px}
-.app .status{color:var(--muted); font-style:italic; display:flex; align-items:center; gap:8px}
-.app .status.error{color:var(--danger); font-style:normal}
-.app .timer{color:var(--assistant); font-style:normal; font-variant-numeric:tabular-nums; font-size:12.5px}
-
-.app .answer{background:var(--panel); border:1px solid var(--border); border-left:4px solid var(--assistant); border-radius:4px 10px 10px 4px; padding:20px 22px; color:var(--text)}
-.app .md{font-size:15px; color:var(--text)}
-.app .md>*:first-child{margin-top:0}
-.app .md>*:last-child{margin-bottom:0}
-.app .md p{margin:0 0 14px; color:var(--text)}
-.app .md h1,.app .md h2,.app .md h3{font-family:Georgia,"Iowan Old Style",serif; line-height:1.3; color:var(--assistant)}
-.app .md h1{font-size:22px; margin:0 0 12px}
-.app .md h2{font-size:18.5px; margin:26px 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border)}
-.app .md h3{font-size:15.5px; margin:20px 0 8px}
-.app .md h2:first-child,.app .md h3:first-child{margin-top:0}
-.app .md ul{list-style:none; margin:0 0 14px; padding-left:2px}
-.app .md ul li{position:relative; padding-left:20px; margin-bottom:7px; color:var(--text)}
-.app .md ul li::before{content:""; position:absolute; left:2px; top:.62em; width:6px; height:6px; border-radius:50%; background:var(--assistant)}
-.app .md ol{margin:0 0 14px; padding-left:22px; color:var(--text)}
-.app .md ol li{margin-bottom:7px; padding-left:4px}
-.app .md ol li::marker{color:var(--assistant); font-weight:600}
-.app .md strong{color:#fff; font-weight:700}
-.app .md a{color:var(--assistant); text-decoration:underline}
-.app .md blockquote{margin:0 0 14px; padding:10px 14px; background:rgba(217,119,87,.08); border-left:3px solid var(--assistant); border-radius:0 6px 6px 0; color:var(--text)}
-.app .md blockquote p:last-child{margin-bottom:0}
-.app .md code{background:var(--panel-2); padding:2px 6px; border-radius:5px; color:var(--assistant); font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.app .md table{border-collapse:collapse; margin:0 0 14px; display:block; overflow-x:auto; color:var(--text)}
-.app .md th,.app .md td{border:1px solid var(--border); padding:7px 12px; text-align:left}
-.app .md th{background:var(--panel-2); color:var(--assistant)}
-
-.app .code{margin:0 0 14px; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--ink)}
-.app .code-bar{display:flex; justify-content:space-between; align-items:center; padding:7px 10px; background:var(--panel-2); color:var(--muted); font-size:12px; text-transform:lowercase; letter-spacing:.02em}
-.app .code pre{margin:0; padding:16px; overflow-x:auto}
-.app .code pre code{background:none; padding:0; color:var(--text); font-size:13.5px; line-height:1.6}
-
-.app .meta{margin-top:18px; padding-top:14px; border-top:1px solid var(--border)}
-.app .meta h4{margin:0 0 8px; font-size:12.5px; color:var(--assistant); font-weight:700; text-transform:uppercase; letter-spacing:.04em}
-.app .meta ul{margin:0; padding-left:18px; color:var(--muted); font-size:13.5px; list-style:disc}
-.app .meta ul li{padding-left:0}
-.app .meta ul li::before{content:none}
-.app .answer-foot{display:flex; align-items:center; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border)}
-
-.app footer{flex:none; background:var(--ink); border-top:1px solid var(--border); padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px))}
-.app .composer{max-width:760px; margin:0 auto; display:flex; gap:10px; align-items:flex-end}
-.app .composer textarea{flex:1; resize:none; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font:inherit}
-.app .composer textarea:focus{border-color:var(--assistant); outline:none; box-shadow:0 0 0 3px rgba(217,119,87,.18)}
-.app .composer button{background:var(--assistant); color:#1a0d08; border:none; font-weight:600; border-radius:8px; padding:12px 22px}
-.app .composer button:disabled{opacity:.45; cursor:default}
-
-@media (max-width:640px){
-  .app .sidebar{position:fixed; left:0; top:0; bottom:0; z-index:20; box-shadow:2px 0 16px rgba(0,0,0,.4)}
-  .app .sidebar.open{width:min(210px,78vw)}
-  .app .backdrop{display:block; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:15}
-  .app main{padding:24px 16px 20px}
-  .app .q{max-width:95%}
-  .app .empty h1{font-size:24px}
-  .app .answer{padding:16px 18px}
-}
-`;
