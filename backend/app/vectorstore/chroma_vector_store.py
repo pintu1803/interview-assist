@@ -44,7 +44,7 @@ class ChromaVectorStore(VectorStore):
 
         ids = [str(uuid.uuid4()) for _ in documents ]
 
-        self.collection.add(
+        self.collection.upsert(
             documents=documents,
             embeddings=embeddings,
             metadatas=metadatas, # type: ignore
