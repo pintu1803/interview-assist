@@ -35,6 +35,12 @@ class Settings(BaseSettings):
 
     frontend_url: str
 
+    smtp_host: str
+    smtp_port: int
+    smtp_user: str
+    smtp_password: str
+    email_from: str
+
     @property
     def llm_provider_list(self):
         return [
