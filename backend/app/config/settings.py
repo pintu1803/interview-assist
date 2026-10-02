@@ -52,7 +52,10 @@ class Settings(BaseSettings):
     # class Config: 
     #     env_file = ".env"
     model_config = SettingsConfigDict(
-        env_file = BASE_DIR / ".env"
+        env_file = ( 
+            BASE_DIR / ".env",
+            BASE_DIR / ".env.secret"
+        )
     )
 
 settings = Settings()

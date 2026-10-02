@@ -34,6 +34,8 @@ app.include_router(admin_router)
 # After every git push, run in aws:
 # connect EC2 instance
 # sudo su - ubuntu
+# cd prism
+# source .venv/bin/activate  
 # cd /home/ubuntu/prism/backend
 # cp .env .env.backup 
 # git pull
