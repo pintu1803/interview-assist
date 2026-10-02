@@ -14,10 +14,10 @@ app = FastAPI(
     title="Prism"
 )
 
-origins = [settings.frontend_url]
+origins = [settings.prod_frontend_url, settings.dev_frontend_url]
 
 print("CORS origins:", origins)
-print("frontend_url =", settings.frontend_url)
+print("Frontend is exposed at ", settings.prod_frontend_url)
 
 app.add_middleware(CORSMiddleware,
                    allow_origins=origins,

@@ -33,7 +33,8 @@ class Settings(BaseSettings):
     doc_storage: str
     ingestion_history: str
 
-    frontend_url: str
+    dev_frontend_url: str
+    prod_frontend_url: str
 
     smtp_host: str
     smtp_port: int
