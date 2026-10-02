@@ -6,9 +6,9 @@ import remarkGfm from "remark-gfm";
 import { FiMenu } from "react-icons/fi";
 import "./App.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL;
 
-console.log("API_URL = ", API_URL)
+console.log("Backend service exposed at = ", API_URL)
 
 const EXAMPLES = [
   "How does ConcurrentHashMap avoid locking the whole map?",
