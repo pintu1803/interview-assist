@@ -12,7 +12,7 @@ async def upload_document(file : UploadFile = File(...)):
 
 @router.post("/ingest")
 def ingest_documents(background_task : BackgroundTasks):
-    background_task.add_task(DocumentService.ingest())
+    background_task.add_task(DocumentService.ingest)
     return {
         "status": "ingestion started"
     }
