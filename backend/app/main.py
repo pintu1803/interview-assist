@@ -37,9 +37,7 @@ app.include_router(admin_router)
 # cd prism
 # source .venv/bin/activate  
 # cd /home/ubuntu/prism/backend
-# cp .env .env.backup 
 # git pull
-# cp .env.backup .env
 # sudo systemctl restart prism  # restart
 # journalctl -u prism -f   # see live logs as on console
 # curl http://127.0.0.1:8000/health
