@@ -8,6 +8,9 @@ ingestion_service = create_ingest_service()
 #define the history path
 INGESTION_HISTORY = settings.ingestion_history
 
+#create the file if absent
+INGESTION_HISTORY.touch(exist_ok=True)
+
 def main(path:str=""):
 
     #check for path validity
