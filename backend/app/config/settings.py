@@ -6,10 +6,15 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[2]
 
 class Settings(BaseSettings):
+    hf_home_path: str
+    hf_cache_path: str
+    vector_db: str
+    doc_storage_path: str
+    ingestion_history_path: str
+
     app_name: str
     environment: str
-    hf_home: str
-    hf_cache_dir: str
+    
     embedding_model: str
     gemini_api_key: str
     gemini_model: str
@@ -17,7 +22,7 @@ class Settings(BaseSettings):
     openai_model: str
     groq_api_key: str
     groq_model: str
-    vector_db_path: str
+    
     embedding_dimension: int
     db_collection_name: str
     chunk_size: int
@@ -29,9 +34,6 @@ class Settings(BaseSettings):
     reranker_provider: str
     reranker_model_name: str
     rerank_topk: int
-
-    doc_storage: str
-    ingestion_history: str
 
     dev_frontend_url: str
     prod_frontend_url: str
@@ -49,8 +51,27 @@ class Settings(BaseSettings):
             for provider in self.llm_providers.split(",")
         ]
 
-    # class Config: 
-    #     env_file = ".env"
+    @property
+    def hf_home(self) -> Path:
+        return BASE_DIR / self.hf_home_path
+
+    @property
+    def hf_cache_dir(self) -> Path:
+        return BASE_DIR / self.hf_cache_path
+
+    @property
+    def vector_db_path(self) -> Path:
+        return BASE_DIR / self.vector_db
+
+    @property
+    def doc_storage(self) -> Path:
+        return BASE_DIR / self.doc_storage_path
+
+    @property
+    def ingestion_history(self) -> Path:
+        return BASE_DIR / self.ingestion_history_path
+    
+    
     model_config = SettingsConfigDict(
         env_file = ( 
             BASE_DIR / ".env",

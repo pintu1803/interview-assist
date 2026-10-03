@@ -37,8 +37,8 @@ def mark_as_ingested(pdf_path:str=""):
         f.write(filename + "\n")
 
 #Return the list of pdf file names 
-def load_ingested_files(INGESTION_HISTORY: str):
-    path = Path(INGESTION_HISTORY)
+def load_ingested_files(INGESTION_HISTORY: Path):
+    path = INGESTION_HISTORY
 
     if not path.exists():
         return set()
@@ -55,6 +55,8 @@ if __name__ == "__main__":
     java_path = settings.doc_storage
     directory = Path(java_path)
     list_of_pdfs = list(directory.glob("*.pdf")) #this gives full/absolute path, not just file names
+
+    print("Full path of the dir where pdf docs are present : ", java_path)
 
     #lets handle knowledge base pdfs one by one
     for pdf_file in list_of_pdfs:

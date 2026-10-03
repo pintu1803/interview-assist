@@ -17,7 +17,7 @@ app = FastAPI(
 origins = [settings.prod_frontend_url, settings.dev_frontend_url]
 
 print("CORS origins:", origins)
-print("Frontend is exposed at ", settings.prod_frontend_url)
+print("Frontend is exposed at ", origins)
 
 app.add_middleware(CORSMiddleware,
                    allow_origins=origins,
@@ -29,7 +29,12 @@ app.include_router(health_router)
 app.include_router(chat_router)
 app.include_router(admin_router)
 
-
+####################################
+# run from your vs code
+# cd /backend
+# ssh -i rag-key.pem ubuntu@52.63.83.129 "sudo systemctl start prism"
+# curl http://127.0.0.1:8000/health
+# curl https://java-prism-ai.duckdns.org/health
 ####################################
 # After every git push, run in aws:
 # connect EC2 instance
