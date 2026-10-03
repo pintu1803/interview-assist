@@ -12,5 +12,5 @@ async def upload_document(file : UploadFile = File(...)):
 
 @router.post("/ingest")
 def ingest_documents():
-    return DocumentService.ingest
+    return DocumentService.ingest()
 
