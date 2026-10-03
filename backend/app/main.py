@@ -29,22 +29,4 @@ app.include_router(health_router)
 app.include_router(chat_router)
 app.include_router(admin_router)
 
-####################################
-# run from your vs code
-# cd /backend
-# ssh -i rag-key.pem ubuntu@52.63.83.129 "sudo systemctl start prism"
-# curl http://127.0.0.1:8000/health
-# curl https://java-prism-ai.duckdns.org/health
-####################################
-# After every git push, run in aws:
-# connect EC2 instance
-# sudo su - ubuntu
-# cd prism
-# source .venv/bin/activate  
-# cd /home/ubuntu/prism/backend
-# git pull
-# sudo systemctl restart prism  # restart
-# journalctl -u prism -f   # see live logs as on console
-# curl http://127.0.0.1:8000/health
-# curl https://java-prism-ai.duckdns.org/health     
-####################################
+#refer to run.commands to see all commands (admin access only)

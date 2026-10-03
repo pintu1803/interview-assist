@@ -35,7 +35,9 @@ class DocumentService:
     @classmethod
     def ingest(cls):
 
-        ingest.main()
+        #this blocks untill ingestion succeeds
+        result = ingest.ingest_all()
         return {
-            "message": "ingestion started"
+            "message": "ingestion completed",
+            **result
         }

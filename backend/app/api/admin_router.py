@@ -1,4 +1,4 @@
-from fastapi import (APIRouter, UploadFile, File, BackgroundTasks)
+from fastapi import (APIRouter, UploadFile, File)
 from app.services.document_service import DocumentService
 from uuid import uuid4
 
@@ -11,9 +11,6 @@ async def upload_document(file : UploadFile = File(...)):
     return result
 
 @router.post("/ingest")
-def ingest_documents(background_task : BackgroundTasks):
-    background_task.add_task(DocumentService.ingest)
-    return {
-        "status": "ingestion started"
-    }
+def ingest_documents():
+    return DocumentService.ingest
 

@@ -47,23 +47,35 @@ def load_ingested_files(INGESTION_HISTORY: Path):
         return set()
     else: 
         return set(path.read_text().splitlines())
-    
-if __name__ == "__main__":
-    # main()
 
+
+def ingest_all():
+    #ingest every new PDF in knowledge base dir
+    directory = settings.doc_storage
+
+    if not directory.is_dir():
+        raise FileNotFoundError(f"Knowledge base dir not found: {directory.resolve()}")
+    
     #get the already ingested file names
     already_ingested = load_ingested_files(INGESTION_HISTORY)
+    list_of_pdfs = sorted(directory.glob("*.pdf")) #this gives full/absolute path, not just file names
 
-    #read the knowledge base dir
-    java_path = settings.doc_storage
-    directory = Path(java_path)
-    list_of_pdfs = list(directory.glob("*.pdf")) #this gives full/absolute path, not just file names
-
-    print("Full path of the dir where pdf docs are present : ", java_path)
-
+    failed = done = skipped = 1
     #lets handle knowledge base pdfs one by one
     for pdf_file in list_of_pdfs:
         if pdf_file.name not in already_ingested:
             main(str(pdf_file))
-        else:
+            done += 1
+        elif pdf_file.name in already_ingested:
             print(f"Skipping {pdf_file.name} as it is already ingested")
+            skipped += 1
+        else:
+            failed += 1
+
+    return {"ingested": done, "skipped":skipped, "failed":failed}
+        
+
+if __name__ == "__main__":
+    #print the dict
+    print(ingest_all())
+
