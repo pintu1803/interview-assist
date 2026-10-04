@@ -1,9 +1,9 @@
 // npm install react-markdown remark-gfm
 // Set VITE_API_URL in .env (defaults to http://localhost:8000)
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiSun, FiMoon } from "react-icons/fi";
 import "./App.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -42,6 +42,56 @@ const Icon = {
   chevron: (p) => (<svg {...p} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 6 6 6-6 6" /></svg>),
 };
 const SOCIAL_ICON = { x: Icon.x, linkedin: Icon.linkedin, github: Icon.github };
+
+/* ---------- Theme ---------- */
+
+const THEME_KEY = "prism-theme";
+
+function getInitialTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+  } catch {
+    /* storage unavailable */
+  }
+  return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+
+function useTheme() {
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useLayoutEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  const toggle = () =>
+    setTheme((t) => {
+      const next = t === "dark" ? "light" : "dark";
+      try {
+        localStorage.setItem(THEME_KEY, next); // only remember an explicit choice
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+
+  return [theme, toggle];
+}
+
+function ThemeToggle({ theme, onToggle }) {
+  const next = theme === "dark" ? "light" : "dark";
+  return (
+    <button
+      className="theme-toggle"
+      onClick={onToggle}
+      type="button"
+      title={`Switch to ${next} theme`}
+      aria-label={`Switch to ${next} theme`}
+    >
+      {theme === "dark" ? <FiSun size={18} /> : <FiMoon size={18} />}
+    </button>
+  );
+}
 
 /* ---------- Rendering helpers ---------- */
 
@@ -203,11 +253,20 @@ function BackButton({ onClick }) {
   );
 }
 
-function ProjectsPage({ onBack }) {
+function PageBar({ onBack, theme, onToggleTheme }) {
+  return (
+    <div className="page-bar">
+      <BackButton onClick={onBack} />
+      <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+    </div>
+  );
+}
+
+function ProjectsPage({ onBack, theme, onToggleTheme }) {
   return (
     <div className="app page">
       <div className="page-inner">
-        <BackButton onClick={onBack} />
+        <PageBar onBack={onBack} theme={theme} onToggleTheme={onToggleTheme} />
         <section className="projects">
           <h1>Other projects</h1>
           <ul className="project-list">
@@ -223,11 +282,11 @@ function ProjectsPage({ onBack }) {
   );
 }
 
-function EmailPage({ onBack, email, setEmail, emailStatus, sendTranscript }) {
+function EmailPage({ onBack, theme, onToggleTheme, email, setEmail, emailStatus, sendTranscript }) {
   return (
     <div className="app page">
       <div className="page-inner">
-        <BackButton onClick={onBack} />
+        <PageBar onBack={onBack} theme={theme} onToggleTheme={onToggleTheme} />
         <section className="email-page">
           <h1>Email me the transcript</h1>
           <p>Send this session's Q&amp;A to your inbox.</p>
@@ -246,6 +305,7 @@ function EmailPage({ onBack, email, setEmail, emailStatus, sendTranscript }) {
 /* ---------- App ---------- */
 
 export default function App() {
+  const [theme, toggleTheme] = useTheme();
   const [question, setQuestion] = useState("");
   const [thread, setThread] = useState([]); // { id, question, startTime, answer?, elapsedMs?, error?, loading }
   const [busy, setBusy] = useState(false);
@@ -324,13 +384,15 @@ export default function App() {
   };
 
   if (view === "projects") {
-    return <ProjectsPage onBack={() => setView("chat")} />;
+    return <ProjectsPage onBack={() => setView("chat")} theme={theme} onToggleTheme={toggleTheme} />;
   }
 
   if (view === "email") {
     return (
       <EmailPage
         onBack={() => setView("chat")}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         email={txEmail}
         setEmail={setTxEmail}
         emailStatus={emailStatus}
@@ -352,9 +414,13 @@ export default function App() {
 
       <div className="shell">
         <header>
+          <button className="menu-btn" onClick={() => setSidebarOpen(true)} aria-label="Open menu" type="button">
+            <FiMenu size={20} />
+          </button>
           <span className="brand" role="button" tabIndex={0} onClick={() => setView("chat")}>Prism</span>
           <span className="rule" />
           <span className="tag">Java interview assistant</span>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </header>
 
         <main>
@@ -403,6 +469,7 @@ export default function App() {
               onKeyDown={onKeyDown}
               placeholder="Ask a question…"
               rows={2}
+              maxLength={1000}
               aria-label="Your question"
             />
             <button onClick={() => ask()} disabled={busy || !question.trim()}>
