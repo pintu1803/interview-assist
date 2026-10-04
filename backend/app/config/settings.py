@@ -44,6 +44,8 @@ class Settings(BaseSettings):
     smtp_password: str
     email_from: str
 
+    admin_api_key: str
+
     @property
     def llm_provider_list(self):
         return [

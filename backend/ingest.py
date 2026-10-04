@@ -61,8 +61,8 @@ def ingest_all():
     list_of_pdfs = sorted(directory.glob("*.pdf")) #this gives full/absolute path, not just file names
 
     print("Size of pdf list = ", len(list_of_pdfs))
-    
-    failed = done = skipped = 1
+
+    failed = done = skipped = 0
     #lets handle knowledge base pdfs one by one
     for pdf_file in list_of_pdfs:
         print("pdf file path - ", pdf_file)
